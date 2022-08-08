@@ -18,9 +18,9 @@ CPPFLAGS:=$(CPPFLAGS) -D__is_kernel -Iinclude
 LDFLAGS:=$(LDFLAGS)
 LIBS:=$(LIBS) -nostdlib -lk -lgcc
 
-ARCHDIR=arch/$(HOSTARCH)
+ARCHDIR=arch/i386
 
-include $(ARCHDIR)/make.config
+include arch/i386/make.config
 
 CFLAGS:=$(CFLAGS) $(KERNEL_ARCH_CFLAGS)
 CPPFLAGS:=$(CPPFLAGS) $(KERNEL_ARCH_CPPFLAGS)
@@ -57,13 +57,15 @@ delos.kernel: $(OBJS) $(ARCHDIR)/linker.ld
 	grub-file --is-x86-multiboot delos.kernel
 
 $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
-	OBj=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name$(@F)` && cp "$$OBJ" %@
+	OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) --print-file-name $(@F)` && cp "$$OBJ" $@
 
 .o.c:
 	$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS) $(CPPFLAGS)
 
+.S.o:
+	$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
 .asm.o:
-	nasm $< -f elf -o $@ $(CFLAGS) $(CPPFLAGS)
+	nasm $< -f elf -o $@ 
 clean:
 	rm -f delos.kernel
 	rm -f $(OBJS) *.o */*.o */*/*.o
@@ -72,8 +74,8 @@ clean:
 install: install-headers install-kernel
 
 install-headers:
-	mkdir -p $(DEST$(INCLUDEDIR)
-	cp -R --preserve=timestamps include/. $(DESTDIR)$(INCLUDEDIR)/.
+	mkdir -p $(DESTDIR)$(INCLUDEDIR)
+	cp -R -p include/. $(DESTDIR)$(INCLUDEDIR)/.
 
 install-kernel: delos.kernel
 	mkdir -p $(DESTDIR)$(BOOTDIR)

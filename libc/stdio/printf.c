@@ -35,7 +35,7 @@ char *__int_str (intmax_t i, char b[], int base, bool plusSignIfNeeded, bool spa
 		shifter = shifter / base;
 	} while (shifter);
 
-	int paddingg = paddingNO - (int)strlen(b);
+	int padding = paddingNo - (int)strlen(b);
 	if (padding < 0) padding = 0;
 
 	if (justify) {
@@ -406,7 +406,7 @@ int vprintf (const char *format, va_list list) {
 						form = 0;
 					}
 
-					__int_str (floating, intStrBuffer, base, plusSign, spaceNosign, form, \
+					__int_str (floating, intStrBuffer, base, plusSign, spaceNoSign, form, \
 							leftJustify, zeroPad);
 					displayString (intStrBuffer, &chars);
 
@@ -421,7 +421,7 @@ int vprintf (const char *format, va_list list) {
 						displayCharacter('.', &chars);
 						__int_str(decPlaces, intStrBuffer, 10, false, false, 0, false, false);
 						intStrBuffer[precSpec] = 0;
-						displayString (intBuffer, &chars);
+						displayString (intStrBuffer, &chars);
 					} else if (altForm) {
 						displayCharacter('.', &chars);
 					}
