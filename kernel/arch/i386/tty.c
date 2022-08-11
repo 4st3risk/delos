@@ -9,7 +9,7 @@
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
-static const uint16_t *VGA_MEMORY = (uint16_t*) 0xB8000;
+static const uint16_t *VGA_MEMORY = (uint16_t*) 0xC03FF000;
 
 static size_t terminal_row;
 static size_t terminal_column;
@@ -51,7 +51,7 @@ void terminal_delete_last_line() {
 	int x, *ptr;
 
 	for (x = 0; x < VGA_WIDTH * 2; x++) {
-		ptr = 0xB8000 + (VGA_WIDTH * 2) * (VGA_HEIGHT - 1) + x;
+		ptr = 0xC03FF000 + (VGA_WIDTH * 2) * (VGA_HEIGHT - 1) + x;
 		*ptr = 0;
 	}
 }
